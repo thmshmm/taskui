@@ -1,13 +1,13 @@
 use anyhow::{bail, Result};
 use serde_yaml::Value;
-use std::fs::File;
+use std::fs::{metadata, File};
 
 pub struct Taskfile {
     pub tasks: Vec<String>,
 }
 
 pub fn load() -> Result<Taskfile> {
-    let cfg_file = File::open("Taskfile.yml")?;
+    let cfg_file = open_file()?;
 
     let cfg: Value = serde_yaml::from_reader(cfg_file)?;
 
@@ -25,4 +25,22 @@ pub fn load() -> Result<Taskfile> {
     let taskfile = Taskfile { tasks: task_list };
 
     Ok(taskfile)
+}
+
+fn open_file() -> Result<File> {
+    let file_names = vec!["Taskfile.yml", "Taskfile.yaml"];
+
+    let mut found = None;
+
+    for &file_name in &file_names {
+        if metadata(file_name).is_ok() {
+            found = Some(file_name);
+            break;
+        }
+    }
+
+    match found {
+        Some(file_name) => Ok(File::open(file_name).unwrap()),
+        None => bail!("Taskfile.(yml/yaml) not found"),
+    }
 }
