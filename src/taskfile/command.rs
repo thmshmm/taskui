@@ -1,7 +1,7 @@
 use anyhow::{Ok, Result};
 use colored::Colorize;
-use std::io::{BufRead, BufReader};
-use std::process::{ChildStderr, ChildStdout, Command, Stdio};
+use std::io::{BufRead, BufReader, Read};
+use std::process::{Command, Stdio};
 use std::thread;
 
 pub fn run_task(name: String) -> Result<()> {
@@ -15,8 +15,8 @@ pub fn run_task(name: String) -> Result<()> {
     let stdout = proc.stdout.unwrap();
     let stderr = proc.stderr.unwrap();
 
-    let thread_print_out = thread::spawn(move || print_stdout(stdout));
-    let thread_print_err = thread::spawn(move || print_stderr(stderr));
+    let thread_print_out = thread::spawn(move || print_output(stdout));
+    let thread_print_err = thread::spawn(move || print_output(stderr));
 
     let _ = thread_print_out.join();
     let _ = thread_print_err.join();
@@ -24,7 +24,7 @@ pub fn run_task(name: String) -> Result<()> {
     Ok(())
 }
 
-fn print_stdout(stream: ChildStdout) {
+fn print_output<T: Read>(stream: T) {
     let reader = BufReader::new(stream);
 
     for line in reader.lines() {
@@ -32,19 +32,12 @@ fn print_stdout(stream: ChildStdout) {
 
         if l.ends_with("is up to date") {
             println!("{}", l.purple());
+        } else if l.starts_with("task: Failed to run task") {
+            println!("{}", l.red());
         } else if l.starts_with("task: ") {
             println!("{}", l.green());
         } else {
             println!("{}", l);
         }
-    }
-}
-
-fn print_stderr(stream: ChildStderr) {
-    let reader = BufReader::new(stream);
-
-    for line in reader.lines() {
-        let l = line.unwrap();
-        println!("{}", l);
     }
 }
