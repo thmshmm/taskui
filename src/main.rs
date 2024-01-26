@@ -17,11 +17,9 @@ fn main() -> Result<()> {
 
     app::terminal::restore(&mut terminal)?;
 
-    if selected_task == "".to_string() {
-        return Ok(());
-    }
-
-    taskfile::command::run_task(selected_task)?;
+    if let Some(task) = selected_task {
+        return taskfile::command::run_task(task.name);
+    } 
 
     Ok(())
 }

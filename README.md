@@ -4,6 +4,13 @@ TaskUI is a lightweight terminal user interface for executing tasks defined usin
 
 ![taskui-example](./taskui-example.png)
 
+## Usage
+
+- Navigate through tasks using arrow keys `up` and `down`, or use `j` and `k` to move.
+- Press `Enter` to execute the selected task.
+- Press `q` to exit the program without executing a task.
+- Press `/` to toggle the search bar. Use `Esc` to reset the search or `Enter` to get back to selection mode.
+
 ## Installation
 
 1. Clone the repository:
@@ -24,13 +31,6 @@ cargo build --release
 ```bash
 alias tui="/path/to/taskui"
 ```
-
-## Usage
-
-- Run `tui` in your terminal to launch TaskUI.
-- Navigate through tasks using arrow keys `up` and `down`, or use `j` and `k` to move.
-- Press `Enter` to execute the selected task.
-- Press `q` to exit the program without executing a task.
 
 ## Example Taskfile.yml
 

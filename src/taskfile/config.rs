@@ -3,7 +3,12 @@ use serde_yaml::Value;
 use std::fs::{metadata, File};
 
 pub struct Taskfile {
-    pub tasks: Vec<String>,
+    pub tasks: Vec<Task>,
+}
+
+#[derive(Clone)]
+pub struct Task {
+    pub name: String,
 }
 
 pub fn load() -> Result<Taskfile> {
@@ -11,12 +16,12 @@ pub fn load() -> Result<Taskfile> {
 
     let cfg: Value = serde_yaml::from_reader(cfg_file)?;
 
-    let mut task_list: Vec<String> = Vec::new();
+    let mut task_list: Vec<Task> = Vec::new();
 
     if let Some(tasks) = cfg.get("tasks").and_then(Value::as_mapping) {
         for (key, _) in tasks {
             let task_name = key.as_str().unwrap().to_string();
-            task_list.push(task_name);
+            task_list.push(Task { name: task_name });
         }
     } else {
         bail!("failed to extract tasks")
