@@ -1,4 +1,4 @@
-use crate::taskfile::config::{Task, Taskfile};
+use crate::taskfile::config::Task;
 use anyhow::Result;
 use crossterm::event::{self, Event, KeyCode, KeyEventKind};
 use ratatui::{
@@ -115,9 +115,9 @@ pub struct State {
 }
 
 impl State {
-    pub fn new(taskfile: Taskfile) -> State {
+    pub fn new(tasks: Vec<Task>) -> State {
         State {
-            tasks: StatefulList::with_items(taskfile.tasks),
+            tasks: StatefulList::with_items(tasks),
             search: String::new(),
             input_mode: InputMode::Select,
         }

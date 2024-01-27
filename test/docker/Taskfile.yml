@@ -1,0 +1,7 @@
+version: '3'
+
+tasks:
+  task1:
+    - echo "docker t1"
+  task2:
+    - echo "docker t2"

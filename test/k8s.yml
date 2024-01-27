@@ -1,0 +1,10 @@
+version: '3'
+
+includes:
+  kubectl: ./kubectl.yml
+
+tasks:
+  task1:
+    - echo "k8s t1"
+  task2:
+    - echo "k8s t2"

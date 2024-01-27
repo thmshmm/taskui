@@ -37,6 +37,13 @@ alias tui="/path/to/taskui"
 ```yaml
 version: '3'
 
+includes:
+  k8s: ./k8s.yml
+  docker: ./docker # requires ./docker/Taskfile.yml to exits
+  helm:
+    taskfile: ./helm.yml
+    optional: true
+
 tasks:
   uptime:
     cmds:

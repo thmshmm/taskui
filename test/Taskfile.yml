@@ -1,0 +1,16 @@
+version: '3'
+
+includes:
+  k8s: ./k8s.yml
+  docker: ./docker
+  helm:
+    taskfile: ./docker/helm.yml
+  kind:
+    taskfile: kind.yml
+    optional: true
+
+tasks:
+  uptime:
+    - uptime
+  date:
+    - date

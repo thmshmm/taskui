@@ -1,0 +1,10 @@
+version: '3'
+
+includes:
+  tiller: ./tiller.yml
+
+tasks:
+  task1:
+    - echo "helm t1"
+  task2:
+    - echo "helm t2"
