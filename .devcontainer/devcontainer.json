@@ -1,0 +1,14 @@
+{
+    "name": "Rust",
+    "image": "rust:latest",
+    "extensions": [
+        "rust-lang.rust-analyzer"
+    ],
+    "settings": {
+        "terminal.integrated.shell.linux": "/bin/bash"
+    },
+    "forwardPorts": [
+        3000
+    ],
+    "postCreateCommand": "rustup component add rustfmt && cargo build"
+}
