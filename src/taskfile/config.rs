@@ -91,6 +91,8 @@ fn handle_includes(includes: Vec<Include>, current_path: &str) -> Result<Vec<Tas
         }
     }
 
+    tasks.sort_by(|a, b| a.name.cmp(&b.name));
+
     Ok(tasks)
 }
 
@@ -114,6 +116,8 @@ fn get_tasks(taskfile_yml: &Value) -> Result<Vec<Task>> {
     } else {
         bail!("failed to extract tasks")
     }
+
+    tasks.sort_by(|a, b| a.name.cmp(&b.name));
 
     Ok(tasks)
 }
