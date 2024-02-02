@@ -63,8 +63,14 @@ jobs:
           tar czvf ../../../${{ matrix.platform.name }} ${{ matrix.platform.bin }}
           cd -
         if: startsWith(github.ref, 'refs/tags/v')
+      - name: Build Changelog
+        id: github_release
+        uses: mikepenz/release-changelog-builder-action@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
           files: "taskui-*.tar.gz"
+          body: ${{steps.github_release.outputs.changelog}}
         if: startsWith(github.ref, 'refs/tags/v')
