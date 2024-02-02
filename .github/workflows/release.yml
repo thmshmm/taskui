@@ -27,6 +27,24 @@ jobs:
             bin: taskui
             name: taskui-Darwin-aarch64.tar.gz
             command: build
+          - release_for: linux-x86_64
+            os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            bin: taskui
+            name: taskui-Linux-x86_64.tar.gz
+            command: both
+          - release_for: linux-aarch64
+            os: ubuntu-latest
+            target: aarch64-unknown-linux-gnu
+            bin: taskui
+            name: taskui-Linux-aarch64.tar.gz
+            command: build
+          - release_for: windows-x86_64
+            os: windows-latest
+            target: x86_64-pc-windows-msvc
+            bin: taskui.exe
+            name: taskui-Windows-x86_64.tar.gz
+            command: both
     runs-on: ${{ matrix.platform.os }}
     steps:
       - name: Checkout
