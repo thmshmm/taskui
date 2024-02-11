@@ -1,40 +1,64 @@
-use ratatui::backend::{Backend, CrosstermBackend};
-use ratatui::Terminal;
-use std::io;
-use std::io::Stdout;
-
 use anyhow::Result;
+use crossterm::terminal;
 use crossterm::{
     event::{DisableMouseCapture, EnableMouseCapture},
-    execute,
-    terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
+    terminal::{EnterAlternateScreen, LeaveAlternateScreen},
 };
+use ratatui::backend::CrosstermBackend;
+use ratatui::Terminal;
+use std::io::Stderr;
+use std::{io, panic};
 
-pub fn setup() -> Result<Terminal<CrosstermBackend<Stdout>>> {
-    enable_raw_mode()?;
-    let mut stdout = io::stdout();
+use super::event::EventHandler;
+use super::{app, ui};
 
-    execute!(stdout, EnterAlternateScreen, EnableMouseCapture)?;
+pub type CrosstermTerminal = Terminal<CrosstermBackend<Stderr>>;
 
-    let backend = CrosstermBackend::new(stdout);
-    let terminal = Terminal::new(backend);
-
-    Ok(terminal.unwrap())
+pub struct UserInterface {
+    terminal: CrosstermTerminal,
+    pub events: EventHandler,
 }
 
-pub fn restore<B: Backend>(terminal: &mut Terminal<B>) -> Result<()>
-where
-    B: std::io::Write,
-{
-    disable_raw_mode()?;
+impl UserInterface {
+    pub fn new(terminal: CrosstermTerminal, events: EventHandler) -> Self {
+        Self { terminal, events }
+    }
 
-    execute!(
-        terminal.backend_mut(),
-        LeaveAlternateScreen,
-        DisableMouseCapture
-    )?;
+    pub fn draw(&mut self, state: &mut app::App) -> Result<()> {
+        self.terminal.draw(|frame| ui::render(frame, state))?;
 
-    terminal.show_cursor()?;
+        Ok(())
+    }
 
-    Ok(())
+    pub fn enter(&mut self) -> Result<()> {
+        terminal::enable_raw_mode()?;
+        crossterm::execute!(io::stderr(), EnterAlternateScreen, EnableMouseCapture)?;
+
+        let panic_hook = panic::take_hook();
+        panic::set_hook(Box::new(move |panic| {
+            Self::reset().expect("failed to reset the terminal");
+            panic_hook(panic);
+        }));
+
+        self.terminal.hide_cursor()?;
+        self.terminal.clear()?;
+
+        Ok(())
+    }
+
+    pub fn exit(&mut self) -> Result<()> {
+        Self::reset()?;
+
+        self.terminal.show_cursor()?;
+
+        Ok(())
+    }
+
+    fn reset() -> Result<()> {
+        terminal::disable_raw_mode()?;
+
+        crossterm::execute!(io::stderr(), LeaveAlternateScreen, DisableMouseCapture)?;
+
+        Ok(())
+    }
 }
