@@ -6,6 +6,11 @@ pub fn update(app: &mut App, key_event: KeyEvent) {
     match app.input_mode {
         InputMode::Select => match key_event.code {
             KeyCode::Char('q') => app.quit(),
+            KeyCode::Char('p') => {
+                if app.tasks.get_selected().is_some() {
+                    app.input_mode = InputMode::Preview;
+                }
+            }
             KeyCode::Enter => {
                 if app.tasks.get_selected().is_some() {
                     app.task_to_exec = app.tasks.get_selected();
@@ -32,6 +37,10 @@ pub fn update(app: &mut App, key_event: KeyEvent) {
                 app.input_mode = InputMode::Select;
             }
             KeyCode::Enter => app.input_mode = InputMode::Select,
+            _ => {}
+        },
+        InputMode::Preview => match key_event.code {
+            KeyCode::Char('q') | KeyCode::Char('p') => app.input_mode = InputMode::Select,
             _ => {}
         },
     }

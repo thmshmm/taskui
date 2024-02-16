@@ -8,6 +8,7 @@ use std::{
 #[derive(Clone)]
 pub struct Task {
     pub name: String,
+    pub body: String,
 }
 
 #[derive(Clone)]
@@ -101,6 +102,7 @@ fn prefix_tasks(tasks: Vec<Task>, include_name: String) -> Vec<Task> {
         .into_iter()
         .map(|task| Task {
             name: format!("{}:{}", include_name, task.name),
+            body: task.body,
         })
         .collect()
 }
@@ -109,9 +111,12 @@ fn get_tasks(taskfile_yml: &Value) -> Result<Vec<Task>> {
     let mut tasks: Vec<Task> = Vec::new();
 
     if let Some(task_mapping) = taskfile_yml.get("tasks").and_then(Value::as_mapping) {
-        for (key, _) in task_mapping {
+        for (key, body) in task_mapping {
             let task_name = key.as_str().unwrap().to_string();
-            tasks.push(Task { name: task_name });
+            tasks.push(Task {
+                name: task_name,
+                body: serde_yaml::to_string(body).unwrap_or_else(|_| "no content".to_string()),
+            });
         }
     } else {
         bail!("failed to extract tasks")

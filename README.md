@@ -2,6 +2,8 @@
 
 TaskUI is a lightweight terminal user interface for executing tasks defined using [taskfile.dev](https://taskfile.dev). It provides an easy way to navigate through tasks using arrow keys or Vim-like shortcuts.
 
+Current features are task `execution`, `search` and `preview`.
+
 ![taskui-example](./taskui-example.png)
 
 ## Usage
@@ -10,6 +12,7 @@ TaskUI is a lightweight terminal user interface for executing tasks defined usin
 - Press `Enter` to execute the selected task.
 - Press `q` to exit the program without executing a task.
 - Press `/` to toggle the search bar. Use `Esc` to reset the search or `Enter` to get back to selection mode.
+- Press `p` to toggle the preview of a selected task. Use `p` again or `q` to close the preview.
 
 ## Installation
 

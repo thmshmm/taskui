@@ -29,6 +29,7 @@ impl App {
 pub enum InputMode {
     Select,
     Search,
+    Preview,
 }
 
 pub struct StatefulList {
