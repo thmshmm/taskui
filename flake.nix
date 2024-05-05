@@ -19,7 +19,14 @@
 
         pkgs = import nixpkgs { inherit system overlays; };
 
-        toolchain = pkgs.rust-bin.stable."1.78.0".default;
+        toolchain = pkgs.rust-bin.stable."1.78.0".default.override {
+          targets = [
+            "x86_64-apple-darwin"
+            "aarch64-apple-darwin"
+            "x86_64-unknown-linux-gnu"
+            "aarch64-unknown-linux-gnu"
+          ];
+        };
 
         naersk' = pkgs.callPackage naersk {
           cargo = toolchain;

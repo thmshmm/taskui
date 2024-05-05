@@ -16,37 +16,32 @@ jobs:
       matrix:
         platform:
           - release_for: macOS-x86_64
-            os: macOS-latest
+            os: macos-latest
             target: x86_64-apple-darwin
-            bin: taskui
-            name: taskui-Darwin-x86_64.tar.gz
-            command: both
           - release_for: macOS-aarch64
-            os: macOS-latest
+            os: macos-latest
             target: aarch64-apple-darwin
-            bin: taskui
-            name: taskui-Darwin-aarch64.tar.gz
-            command: build
+          - release_for: Linux-x86_64
+            os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+          - release_for: Linux-aarch64
+            os: ubuntu-latest
+            target: aarch64-unknown-linux-gnu
     runs-on: ${{ matrix.platform.os }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v25
       - name: Build binary
-        uses: houseabsolute/actions-rust-cross@v0
-        with:
-          command: ${{ matrix.platform.command }}
-          target: ${{ matrix.platform.target }}
-          args: "--locked --release"
-          strip: true
+        run: |
+          nix build
       - name: Archive
         shell: bash
         run: |
-          cd target/${{ matrix.platform.target }}/release
-          tar czvf ../../../${{ matrix.platform.name }} ${{ matrix.platform.bin }}
-          cd -
+          tar czvf taskui-${{ matrix.platform.target }}.tar.gz -h -C result/bin taskui
         if: startsWith(github.ref, 'refs/tags/v')
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: "taskui-*.tar.gz"
         if: startsWith(github.ref, 'refs/tags/v')
