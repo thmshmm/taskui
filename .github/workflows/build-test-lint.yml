@@ -13,11 +13,14 @@ jobs:
   build-test-lint:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
+    - uses: cachix/install-nix-action@v25
     - name: Build
-      run: cargo build
+      run: |
+        nix build
     - name: Test
-      run: cargo test
+      run: |
+        nix develop --ignore-environment --command "cargo" "test"
     - name: Lint
-      run: cargo clippy
-
+      run: |
+        nix develop --ignore-environment --command "cargo" "clippy"
