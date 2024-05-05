@@ -24,9 +24,17 @@ git clone https://github.com/thmshmm/taskui.git
 
 2. Build the binary
 
+using cargo:
+
 ```bash
 cd taskui
 cargo build --release
+```
+
+using Nix:
+
+```bash
+nix build
 ```
 
 3. Create a shell alias for easy access:
