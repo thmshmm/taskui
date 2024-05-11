@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 use ratatui::{
     prelude::*,
     widgets::{ListItem, *},
@@ -8,7 +10,7 @@ use super::app::{App, InputMode};
 pub fn render(f: &mut Frame, app: &mut App) {
     let mut search_chunk_size = 0;
 
-    if matches!(app.input_mode, InputMode::Search) || app.search.len() > 0 {
+    if matches!(app.input_mode, InputMode::Search) || !app.search.is_empty() {
         search_chunk_size = 3;
     }
 
@@ -29,6 +31,7 @@ pub fn render(f: &mut Frame, app: &mut App) {
         .highlight_style(
             Style::default()
                 .bg(Color::LightGreen)
+                .fg(Color::from_str("#0000ff").unwrap())
                 .add_modifier(Modifier::BOLD),
         );
 
