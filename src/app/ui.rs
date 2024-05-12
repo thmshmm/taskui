@@ -5,6 +5,8 @@ use ratatui::{
     widgets::{ListItem, *},
 };
 
+use crate::taskfile::config::Task;
+
 use super::app::{App, InputMode};
 
 pub fn render(f: &mut Frame, app: &mut App) {
@@ -23,7 +25,7 @@ pub fn render(f: &mut Frame, app: &mut App) {
         .tasks
         .items
         .iter()
-        .map(|i| ListItem::new(i.item.name.as_str()).style(Style::default()))
+        .map(|i| formatted_list_item(&i.item))
         .collect();
 
     let items = List::new(items)
@@ -47,6 +49,15 @@ pub fn render(f: &mut Frame, app: &mut App) {
         InputMode::Search => f.set_cursor(1 + app.search.len() as u16, 1),
         InputMode::Preview => render_preview(f, app),
         _ => {}
+    }
+}
+
+fn formatted_list_item(task: &Task) -> ListItem<'_> {
+    if task.internal {
+        ListItem::new(task.name.as_str().to_owned() + " (internal)")
+            .style(Style::default().fg(Color::DarkGray))
+    } else {
+        ListItem::new(task.name.as_str()).style(Style::default())
     }
 }
 

@@ -2,6 +2,8 @@ use crate::taskfile::config::Task;
 use ratatui::widgets::ListState;
 use std::usize;
 
+use super::Config;
+
 pub struct App {
     pub tasks: StatefulList,
     pub search: String,
@@ -11,7 +13,12 @@ pub struct App {
 }
 
 impl App {
-    pub fn new(tasks: Vec<Task>) -> App {
+    pub fn new(cfg: Config, tasks: Vec<Task>) -> App {
+        let tasks = tasks
+            .into_iter()
+            .filter(|task| !task.internal || cfg.list_internal)
+            .collect();
+
         App {
             tasks: StatefulList::with_items(tasks),
             search: String::new(),

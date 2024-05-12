@@ -1,6 +1,9 @@
 mod app;
 pub use self::app::App;
 
+mod config;
+pub use self::config::Config;
+
 pub mod event;
 
 mod update;

@@ -36,6 +36,6 @@
       in rec {
         defaultPackage = naersk'.buildPackage { src = ./.; };
 
-        devShell = pkgs.mkShell { nativeBuildInputs = [ toolchain ]; };
+        devShell = pkgs.mkShell { nativeBuildInputs = [ toolchain pkgs.rust-analyzer ]; };
       });
 }

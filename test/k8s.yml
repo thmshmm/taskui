@@ -8,3 +8,6 @@ tasks:
     - echo "k8s t1"
   task2:
     - echo "k8s t2"
+  task3:
+    internal: true
+    cmd: echo "k8s t3"

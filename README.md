@@ -14,6 +14,16 @@ Current features are task `execution`, `search` and `preview`.
 - Press `/` to toggle the search bar. Use `Esc` to reset the search or `Enter` to get back to selection mode.
 - Press `p` to toggle the preview of a selected task. Use `p` again or `q` to close the preview.
 
+## Configuration
+
+TaskUI can be configured using environment variables.
+
+Available configuration options are:
+
+| Environment Variable | Description | Default |
+|----------------------|-------------|---------|
+| `TASKUI_LIST_INTERNAL` | Show internal tasks in the task list | `false` |
+
 ## Installation
 
 1. Clone the repository:
