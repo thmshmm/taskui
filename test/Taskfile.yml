@@ -8,6 +8,9 @@ includes:
   kind:
     taskfile: kind.yml
     optional: true
+  podman:
+    taskfile: ./podman.yml
+    internal: true
 
 tasks:
   uptime:

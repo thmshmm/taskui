@@ -1,0 +1,7 @@
+version: '3'
+
+tasks:
+  task1:
+    - echo "podman t1"
+  task2:
+    - echo "podman t2"

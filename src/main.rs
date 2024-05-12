@@ -13,7 +13,8 @@ mod taskfile;
 fn main() -> Result<()> {
     let taskfile = taskfile::config::load()?;
 
-    let mut app = App::new(taskfile);
+    let cfg = app::Config::load();
+    let mut app = App::new(cfg, taskfile);
 
     let backend = CrosstermBackend::new(std::io::stderr());
     let terminal = Terminal::new(backend)?;
