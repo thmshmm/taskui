@@ -1,5 +1,3 @@
-use std::str::FromStr;
-
 use ratatui::{
     prelude::*,
     widgets::{ListItem, *},
@@ -32,8 +30,8 @@ pub fn render(f: &mut Frame, app: &mut App) {
         .block(Block::default().borders(Borders::ALL).title("Tasks"))
         .highlight_style(
             Style::default()
-                .bg(Color::LightGreen)
-                .fg(Color::from_str("#0000ff").unwrap())
+                .bg(app.cfg.highlight_style_bg)
+                .fg(app.cfg.highlight_style_fg)
                 .add_modifier(Modifier::BOLD),
         );
 

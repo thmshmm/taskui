@@ -5,6 +5,7 @@ use std::usize;
 use super::Config;
 
 pub struct App {
+    pub cfg: Config,
     pub tasks: StatefulList,
     pub search: String,
     pub input_mode: InputMode,
@@ -20,6 +21,7 @@ impl App {
             .collect();
 
         App {
+            cfg,
             tasks: StatefulList::with_items(tasks),
             search: String::new(),
             input_mode: InputMode::Select,
