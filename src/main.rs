@@ -1,19 +1,19 @@
-use crate::app::App;
+use crate::taskui::{App, Config};
 use anyhow::Result;
-use app::{
+use ratatui::{backend::CrosstermBackend, Terminal};
+use taskui::{
     event::{Event, EventHandler},
     terminal::UserInterface,
     update,
 };
-use ratatui::{backend::CrosstermBackend, Terminal};
 
-mod app;
 mod taskfile;
+mod taskui;
 
 fn main() -> Result<()> {
     let taskfile = taskfile::config::load()?;
 
-    let cfg = app::Config::load();
+    let cfg = Config::load();
     let mut app = App::new(cfg, taskfile);
 
     let backend = CrosstermBackend::new(std::io::stderr());

@@ -20,7 +20,7 @@ jobs:
         nix build
     - name: Test
       run: |
-        nix develop --ignore-environment --command "cargo" "test"
+        nix build .#test
     - name: Lint
       run: |
-        nix develop --ignore-environment --command "cargo" "clippy"
+        nix build .#clippy

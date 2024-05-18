@@ -34,7 +34,19 @@
         };
 
       in rec {
-        defaultPackage = naersk'.buildPackage { src = ./.; };
+        packages = {
+          default = naersk'.buildPackage {
+            src = ./.;
+          };
+          test = naersk'.buildPackage {
+            src = ./.;
+            mode = "test";
+          };
+		  clippy = naersk'.buildPackage {
+            src = ./.;
+            mode = "clippy";
+          };
+        };
 
         devShell = pkgs.mkShell { nativeBuildInputs = [ toolchain pkgs.rust-analyzer ]; };
       });
