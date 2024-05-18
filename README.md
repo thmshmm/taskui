@@ -23,6 +23,8 @@ Available configuration options are:
 | Environment Variable | Description | Default |
 |----------------------|-------------|---------|
 | `TASKUI_LIST_INTERNAL` | Show internal tasks in the task list | `false` |
+| `TASKUI_HIGHLIGHT_STYLE_BG` | Background color for highlighted task | `#ffffff` |
+| `TASKUI_HIGHLIGHT_STYLE_FG` | Foreground/text color for highlighted task | `#4c4f69` |
 
 ## Installation
 
