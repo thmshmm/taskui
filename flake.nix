@@ -35,19 +35,31 @@
 
       in rec {
         packages = {
-          default = naersk'.buildPackage {
-            src = ./.;
-          };
+          default = naersk'.buildPackage { src = ./.; };
           test = naersk'.buildPackage {
             src = ./.;
             mode = "test";
           };
-		  clippy = naersk'.buildPackage {
+          clippy = naersk'.buildPackage {
             src = ./.;
             mode = "clippy";
           };
         };
 
-        devShell = pkgs.mkShell { nativeBuildInputs = [ toolchain pkgs.rust-analyzer ]; };
+        defaultPackage = packages.default;
+
+        apps = rec {
+          taskui = flake-utils.lib.mkApp {
+            name = "taskui";
+            drv = self.packages.${system}.default;
+          };
+          default = taskui;
+        };
+
+        defaultApp = apps.default;
+
+        devShell = pkgs.mkShell {
+          nativeBuildInputs = [ toolchain pkgs.rust-analyzer ];
+        };
       });
 }
