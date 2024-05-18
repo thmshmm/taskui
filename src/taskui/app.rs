@@ -69,7 +69,7 @@ impl StatefulList {
     }
 
     pub fn next(&mut self) {
-        if self.items.len() == 0 {
+        if self.items.is_empty() {
             self.reset_selected();
             return;
         }
@@ -89,7 +89,7 @@ impl StatefulList {
     }
 
     pub fn previous(&mut self) {
-        if self.items.len() == 0 {
+        if self.items.is_empty() {
             self.reset_selected();
             return;
         }
@@ -122,11 +122,11 @@ impl StatefulList {
     }
 
     pub fn filter(&mut self, search: &String) {
-        self.items = self.orig_items.clone();
+        self.items.clone_from(&self.orig_items);
         self.items.retain(|i| i.item.name.contains(search));
         self.state = ListState::default();
 
-        if self.items.len() > 0 {
+        if !self.items.is_empty() {
             self.state.select(Some(0));
         } else {
             self.state.select(None);

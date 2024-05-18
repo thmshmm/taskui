@@ -32,14 +32,14 @@ pub fn load() -> Result<Vec<Task>> {
         current_path.to_str().unwrap(),
     )?;
 
-    tasks.extend(included_tasks.into_iter());
+    tasks.extend(included_tasks);
 
     Ok(tasks)
 }
 
 fn find_supported_file() -> Result<&'static str> {
     // https://taskfile.dev/usage/#supported-file-names
-    let file_names = vec![
+    let file_names = [
         "Taskfile.yml",
         "taskfile.yml",
         "Taskfile.yaml",
@@ -53,7 +53,7 @@ fn find_supported_file() -> Result<&'static str> {
     let found = file_names
         .iter()
         .find(|&file_name| metadata(file_name).is_ok())
-        .map(|&file_name| file_name);
+        .copied();
 
     match found {
         Some(file_name) => Ok(file_name),
@@ -175,7 +175,7 @@ fn extract_include_path(include_yml: &Value) -> Result<String> {
         Value::String(path) if path.ends_with(".yml") || path.ends_with(".yaml") => {
             path.to_string()
         }
-        Value::String(path) if path.ends_with("/") => format!("{}Taskfile.yml", path),
+        Value::String(path) if path.ends_with('/') => format!("{}Taskfile.yml", path),
         Value::String(path) => format!("{}/Taskfile.yml", path),
         Value::Mapping(v) => {
             if let Some(taskfile) = v.get(&Value::String("taskfile".to_string())) {
