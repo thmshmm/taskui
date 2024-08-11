@@ -1,18 +1,18 @@
-use anyhow::{bail, Result};
+use anyhow::{anyhow, bail, Result};
 use serde_yaml::Value;
 use std::{
     fs::{metadata, File},
     path::PathBuf,
 };
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Task {
     pub name: String,
     pub body: String,
     pub internal: bool,
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 struct Include {
     name: String,
     path: String,
@@ -57,7 +57,7 @@ fn find_supported_file() -> Result<&'static str> {
 
     match found {
         Some(file_name) => Ok(file_name),
-        None => bail!("no supported file found"),
+        None => Err(anyhow!("no supported file found")),
     }
 }
 
@@ -73,15 +73,7 @@ fn handle_includes(includes: Vec<Include>, current_path: &str) -> Result<Vec<Tas
                 let include_tasks = get_tasks(&taskfile_yml)?;
                 let include_tasks: Vec<Task> =
                     prefix_tasks(include_tasks.clone(), include.name.clone());
-                let include_tasks: Vec<Task> = include_tasks
-                    .into_iter()
-                    .map(|task| Task {
-                        name: task.name,
-                        body: task.body,
-                        internal: task.internal || include.internal,
-                    })
-                    .collect();
-
+                let include_tasks: Vec<Task> = flag_internal_tasks(&include, include_tasks);
                 tasks.extend(include_tasks);
 
                 if let Some(sub_includes) = get_includes(&taskfile_yml)? {
@@ -90,15 +82,15 @@ fn handle_includes(includes: Vec<Include>, current_path: &str) -> Result<Vec<Tas
                     let sub_include_tasks = handle_includes(sub_includes, include_path)?;
                     let sub_include_tasks: Vec<Task> =
                         prefix_tasks(sub_include_tasks.clone(), include.name.clone());
+                    let sub_include_tasks = flag_internal_tasks(&include, sub_include_tasks);
                     tasks.extend(sub_include_tasks);
                 }
             }
             Err(_) => {
                 if include.optional {
                     continue;
-                } else {
-                    bail!("include not found: {}", include.path);
                 }
+                bail!("include not found: {}", include.path);
             }
         }
     }
@@ -106,6 +98,17 @@ fn handle_includes(includes: Vec<Include>, current_path: &str) -> Result<Vec<Tas
     tasks.sort_by(|a, b| a.name.cmp(&b.name));
 
     Ok(tasks)
+}
+
+fn flag_internal_tasks(include: &Include, tasks: Vec<Task>) -> Vec<Task> {
+    tasks
+        .into_iter()
+        .map(|task| Task {
+            name: task.name,
+            body: task.body,
+            internal: task.internal || include.internal,
+        })
+        .collect()
 }
 
 fn prefix_tasks(tasks: Vec<Task>, include_name: String) -> Vec<Task> {

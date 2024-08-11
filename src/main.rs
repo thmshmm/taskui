@@ -9,8 +9,13 @@ use taskui::{
 
 mod taskfile;
 mod taskui;
+mod trace;
 
 fn main() -> Result<()> {
+    trace::initialize_logging()?;
+
+    trace_dbg!("Starting taskui");
+
     let taskfile = taskfile::config::load()?;
 
     let cfg = Config::load();
